@@ -39,7 +39,7 @@ function Auth({ type }: { type: "signup" | "signin" }) {
 
             <div className="text-slate-500">
               {type === "signin" ? "Don't have an account?" : "Already have an account?"}
-              <Link className="pl-2 underline" to={type === "signin" ? "/signup" : "/signin"}>
+              <Link className="pl-2 underline" to={type === "signin" ? "/signup" : "/"}>
                 {type === "signin" ? "Sign up" : "Sign in"}
               </Link>
             </div>

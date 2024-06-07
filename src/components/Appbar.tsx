@@ -14,7 +14,7 @@ function Appbar() {
 
   const handleLogOut = () => {
     localStorage.removeItem("token");
-    navigate("/signin");
+    navigate("/");
   };
   return (
     <div className="border-b flex justify-between px-10 py-2">
