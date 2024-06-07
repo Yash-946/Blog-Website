@@ -26,7 +26,7 @@ function StoryCard({ id, title, content }: StoryCardProps) {
 
 
   const handleEdit = () => {
-    navigate("/publish", { state: { id, title, content, update: true } });
+    navigate("/publish", { state: { id, title, content } });
   }
 
   return (

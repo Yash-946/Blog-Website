@@ -2,7 +2,7 @@ import Appbar from "../components/Appbar";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import JoditEditor from "jodit-react";
 
 
@@ -10,7 +10,7 @@ import JoditEditor from "jodit-react";
 const Publish = () => {
 
   const { state } = useLocation();
-  const { id, title: initialTitle, content: initialContent, update } = state || {};
+  const { id, title: initialTitle, content: initialContent } = state || {};
   
   const [title, setTitle] = useState(initialTitle || "");
   const [description, setDescription] = useState(initialContent || "");
