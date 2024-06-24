@@ -9,25 +9,25 @@ import toast from "react-hot-toast";
 
 type BlogPost = {
   id: number;
-  Title: string;
-  Content: string;
+  title: string;
+  content: string;
   published?: boolean;
 };
 
-const Publish = ({id, Title, Content}:BlogPost) => {
 
-  const [title, setTitle] = useState(Title || "");
-  const [description, setDescription] = useState(Content || "");
+const Publish = ({ id, title, content }: BlogPost) => {
+  const [titleState, setTitle] = useState(title || "");
+  const [description, setDescription] = useState(content || "");
   const navigate = useNavigate();
   const editor = useRef(null);
 
   useEffect(() => {
-    if (Content) {
-      setDescription(Content);
+    if (content) {
+      setDescription(content);
     } else {
       setDescription("");
     }
-  }, [Content]);
+  }, [content]);
 
   const options = [
     "bold",
@@ -90,25 +90,25 @@ const Publish = ({id, Title, Content}:BlogPost) => {
       // console.log(response.data.blogID);
     },
     onError: () => {
-      toast.error("Failed to publish.")
+      toast.error("Failed to publish.");
     },
   });
 
   const handlePublish = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (title === "" || description === "") {
-      toast.error("Some Input fields must be empty.")
+    if (titleState === "" || description === "") {
+      toast.error("Some Input fields must be empty.");
     } else {
-      publishMutation.mutate({ title, content: description, published: true });
+      publishMutation.mutate({ id, title: titleState, content: description, published: true });
     }
   };
 
   const handleDraft = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (title === "" || description === "") {
-      toast.error("Some Input fields must be empty.")
+    if (titleState === "" || description === "") {
+      toast.error("Some Input fields must be empty.");
     } else {
-      publishMutation.mutate({ title, content: description });
+      publishMutation.mutate({ id, title: titleState, content: description });
     }
   };
 
@@ -117,7 +117,7 @@ const Publish = ({id, Title, Content}:BlogPost) => {
       `${BACKEND_URL}/api/v1/blog/`,
       {
         id,
-        title,
+        title: titleState,
         content: description,
       },
       {
@@ -128,7 +128,7 @@ const Publish = ({id, Title, Content}:BlogPost) => {
     );
 
     const data = response.data;
-    // console.log(data);
+    console.log(data);
     navigate(`/blog/${id}`);
   };
 
@@ -138,7 +138,7 @@ const Publish = ({id, Title, Content}:BlogPost) => {
       <div className="flex justify-center w-full pt-8">
         <div className="max-w-screen-xl w-full">
           <input
-            value={title}
+            value={titleState}
             onChange={(e) => {
               setTitle(e.target.value);
             }}
@@ -147,10 +147,6 @@ const Publish = ({id, Title, Content}:BlogPost) => {
             placeholder="Title"
           />
 
-          {/* <TextEditor onChange={(e) => {
-          setDescription(e.target.value)
-          }} /> */}
-
           <JoditEditor
             ref={editor}
             value={description}
@@ -158,7 +154,7 @@ const Publish = ({id, Title, Content}:BlogPost) => {
             config={config}
           />
           <div>
-            {!Content && (
+            {!content && (
               <button
                 onClick={handlePublish}
                 type="submit"
@@ -167,27 +163,25 @@ const Publish = ({id, Title, Content}:BlogPost) => {
                 Publish Story
               </button>
             )}
-            {Content && (
+            {content && (
               <button
                 onClick={handleUpdate}
                 type="submit"
                 className="mt-4 mb-4 inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800"
               >
-                Upate Story
+                Update Story
               </button>
             )}
-            {!Content && (
+            {!content && (
               <button
-              onClick={handleDraft}
-              type="submit"
-              className="mt-4 mb-4 inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800 ml-3"
-            >
-              Save as Draft
-            </button>
+                onClick={handleDraft}
+                type="submit"
+                className="mt-4 mb-4 inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800 ml-3"
+              >
+                Save as Draft
+              </button>
             )}
           </div>
-
-          {/* {description} */}
         </div>
       </div>
     </div>

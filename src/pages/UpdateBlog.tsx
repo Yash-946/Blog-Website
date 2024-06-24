@@ -27,7 +27,7 @@ export default function UpdateBlog() {
 
   return (
     <div>
-      <Publish id={blog?.id} Content={blog?.content} Title={blog?.title} />
+      <Publish id={blog?.id} content={blog?.content} title={blog?.title} />
     </div>
   );
 }
