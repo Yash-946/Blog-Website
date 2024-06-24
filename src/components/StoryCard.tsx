@@ -26,19 +26,11 @@ function StoryCard({ id, title, content }: StoryCardProps) {
 
 
   const handleEdit = () => {
-    navigate("/publish", { state: { id, title, content } });
+    navigate(`/update/${id}`);
   }
 
   return (
     <div>
-      {/* <ResponsiveDialog
-        isOpen={isDeleteOpen}
-        setIsOpen={setIsDeleteOpen}
-        title="Delete Person"
-        description="Are you sure you want to delete this person?"
-      >
-        <DeleteForm cardId={"1212"} setIsOpen={setIsDeleteOpen} />
-      </ResponsiveDialog> */}
       <DeleteForm2 setIsOpen={setIsDeleteOpen} isOpen={isDeleteOpen} ID={id} />
 
       <div className="p-4 border-b border-slate-200 pb-4 w-screen max-w-screen-md ">
@@ -79,7 +71,7 @@ function StoryCard({ id, title, content }: StoryCardProps) {
                     onClick={() => {
                       setIsDeleteOpen(true);
                     }}
-                    className="w-full justify-start flex text-red-500 rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
+                    className="w-full justify-start flex text-red-500 rounded-md p-2 transition-all duration-75 hover:bg-red-400 hover:text-black"
                   >
                     <IconMenu
                       text="Delete"

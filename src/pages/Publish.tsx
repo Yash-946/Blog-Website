@@ -1,29 +1,33 @@
 import Appbar from "../components/Appbar";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import JoditEditor from "jodit-react";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
+type BlogPost = {
+  id: number;
+  Title: string;
+  Content: string;
+  published?: boolean;
+};
 
+const Publish = ({id, Title, Content}:BlogPost) => {
 
-const Publish = () => {
-
-  const { state } = useLocation();
-  const { id, title: initialTitle, content: initialContent } = state || {};
-  
-  const [title, setTitle] = useState(initialTitle || "");
-  const [description, setDescription] = useState(initialContent || "");
+  const [title, setTitle] = useState(Title || "");
+  const [description, setDescription] = useState(Content || "");
   const navigate = useNavigate();
   const editor = useRef(null);
 
   useEffect(() => {
-    if (initialContent) {
-      setDescription(initialContent);
+    if (Content) {
+      setDescription(Content);
     } else {
       setDescription("");
     }
-  }, [initialContent]);
+  }, [Content]);
 
   const options = [
     "bold",
@@ -72,11 +76,47 @@ const Publish = () => {
     []
   );
 
-  const handlePublish = async (e: any) => {
+  const publishMutation = useMutation<any, Error, BlogPost>({
+    mutationFn: (body) => {
+      // console.log(body);
+      return axios.post(`${BACKEND_URL}/api/v1/blog/`, body, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      });
+    },
+    onSuccess: (response) => {
+      navigate(`/blog/${response.data.blogID}`);
+      // console.log(response.data.blogID);
+    },
+    onError: () => {
+      toast.error("Failed to publish.")
+    },
+  });
+
+  const handlePublish = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const response = await axios.post(
+    if (title === "" || description === "") {
+      toast.error("Some Input fields must be empty.")
+    } else {
+      publishMutation.mutate({ title, content: description, published: true });
+    }
+  };
+
+  const handleDraft = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (title === "" || description === "") {
+      toast.error("Some Input fields must be empty.")
+    } else {
+      publishMutation.mutate({ title, content: description });
+    }
+  };
+
+  const handleUpdate = async () => {
+    const response = await axios.put(
       `${BACKEND_URL}/api/v1/blog/`,
       {
+        id,
         title,
         content: description,
       },
@@ -86,26 +126,11 @@ const Publish = () => {
         },
       }
     );
-    navigate(`/blog/${response.data.blog.id}`);
-  };
 
-  const handleUpdate = async () => {
-    // console.log(title, description)
-    const response = await axios.put(`${BACKEND_URL}/api/v1/blog/`,{
-      id,
-      title,
-      content: description
-    },{
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    })
-
-    const data = response.data
-    console.log(data);
+    const data = response.data;
+    // console.log(data);
     navigate(`/blog/${id}`);
-    
-  }
+  };
 
   return (
     <div>
@@ -131,23 +156,36 @@ const Publish = () => {
             value={description}
             onChange={(newchange) => setDescription(newchange)}
             config={config}
-
           />
-
-          {!initialContent && <button
-            onClick={handlePublish}
-            type="submit"
-            className="mt-4 mb-4 inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800"
-          >
-            Publish Story
-          </button>}
-          {initialContent && <button
-            onClick={handleUpdate}
-            type="submit"
-            className="mt-4 mb-4 inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800"
-          >
-            Upate Story
-          </button>}
+          <div>
+            {!Content && (
+              <button
+                onClick={handlePublish}
+                type="submit"
+                className="mt-4 mb-4 inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800"
+              >
+                Publish Story
+              </button>
+            )}
+            {Content && (
+              <button
+                onClick={handleUpdate}
+                type="submit"
+                className="mt-4 mb-4 inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800"
+              >
+                Upate Story
+              </button>
+            )}
+            {!Content && (
+              <button
+              onClick={handleDraft}
+              type="submit"
+              className="mt-4 mb-4 inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800 ml-3"
+            >
+              Save as Draft
+            </button>
+            )}
+          </div>
 
           {/* {description} */}
         </div>

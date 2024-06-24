@@ -6,6 +6,8 @@ export interface Blogs {
   "content": string;
   "title": string;
   "id": number
+  "createdAt": string;
+  "published": boolean
   "author": {
       "name": string
   }
@@ -32,6 +34,7 @@ export const useBlogs = () => {
   return {
     loading, blogs
   }
+  
 }
 
 export const useBlog = ({ id }: { id: string }) => {

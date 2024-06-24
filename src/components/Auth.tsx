@@ -16,10 +16,11 @@ function Auth({ type }: { type: "signup" | "signin" }) {
   async function sendRequest() {
     try {
       const response = await axios.post(`${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup":"signin"}`,postInputs)
-      const {jwtID} = response.data;
-      console.log(jwtID);
+      const {jwtID, name} = response.data;
+      // console.log(jwtID);
       
       localStorage.setItem("token",jwtID);
+      localStorage.setItem("name",name);
       navigate("/blogs");
 
     } catch (error) {

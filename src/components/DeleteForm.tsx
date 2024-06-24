@@ -9,9 +9,11 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { BACKEND_URL } from "@/config";
+import { DeletedStory } from "@/store/atom";
 import axios from "axios";
 import { Loader } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from 'react';
+import { useSetRecoilState } from "recoil";
 
 type Props = {
   setIsOpen: Dispatch<SetStateAction<boolean>>; 
@@ -30,10 +32,13 @@ const DeleteForm2 = ({ setIsOpen, isOpen, ID }: Props) => {
     setIsOpen(false);
   };
 
-  const handleDelete = async () => {
-    console.log("Delete");
+  const setID = useSetRecoilState(DeletedStory)
 
+  const handleDelete = async () => {
+
+    console.log("Delete");
     setLoading(true);
+
     try {
       const response = await axios.delete(`${BACKEND_URL}/api/v1/blog/${ID}`, {
         headers: {
@@ -42,6 +47,8 @@ const DeleteForm2 = ({ setIsOpen, isOpen, ID }: Props) => {
       });
       const data = response.data;
       console.log(data);
+      setID({id:ID})
+
     } catch (error) {
       console.error("Error deleting the story", error);
     } finally {

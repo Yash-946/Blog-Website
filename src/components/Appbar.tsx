@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Avatar } from "./BlogCard";
 import {
   DropdownMenu,
@@ -8,14 +8,20 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { BookText, LogOut } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 function Appbar() {
   const navigate = useNavigate();
+  const {pathname} = useLocation()
+  // console.log(pathname);
+  
 
   const handleLogOut = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("name");
     navigate("/");
   };
+  const name = localStorage.getItem("name");
   return (
     <div className="border-b flex justify-between px-10 py-2">
       <Link
@@ -28,7 +34,12 @@ function Appbar() {
         <Link to={`/publish`}>
           <button
             type="button"
-            className="mr-4 text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 "
+            className={cn(
+              "mr-4 text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2",
+              (pathname === "/publish") && "bg-green-300 hover:bg-green-300"
+
+            )}
+            disabled={pathname === "/publish"? true:false}
           >
             New
           </button>
@@ -36,7 +47,7 @@ function Appbar() {
 
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Avatar size={"big"} name="Yash" />
+            <Avatar size={"big"} name={name!} />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-40 mr-2">
             <Link to={`/me/stories`}>
