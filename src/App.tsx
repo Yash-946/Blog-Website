@@ -18,7 +18,7 @@ function App() {
           <Route path="/" element={<Signin />} />
           <Route path="/blog/:id" element={<Blog />} />
           <Route path="/blogs" element={<Blogs />} />
-          <Route path="/publish/" element={<Publish id={0} Content="" Title=""/>} />
+          <Route path="/publish/" element={<Publish id={0} content="" title=""/>} />
           <Route path="/me/stories" element={<Stories />} />
           <Route path="/update/:id" element={<UpdateBlog />} />
         </Routes>
