@@ -17,11 +17,15 @@ function Auth({ type }: { type: "signup" | "signin" }) {
     try {
       const response = await axios.post(`${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup":"signin"}`,postInputs)
       const {jwtID, name} = response.data;
-      // console.log(jwtID);
-      
-      localStorage.setItem("token",jwtID);
-      localStorage.setItem("name",name);
-      navigate("/blogs");
+      console.log("jwt",jwtID);
+      if(!jwtID){
+        alert("Please write the connect password");
+      }
+      else{
+        localStorage.setItem("token",jwtID);
+        localStorage.setItem("name",name);
+        navigate("/blogs");
+      }
 
     } catch (error) {
       console.log(error);
